@@ -1,253 +1,37 @@
-<h3>PHP Class for HTTP Response Status Codes</h3>
-The Recess! Framework uses the following class which provides constants and simple helper methods for HTTP Response Status Codes.
+#What do the HTTP status codes 401, 403, 404 and 500 mean?
 
+#What is an HTTP status code?
 
-<?php
+For every request from a webbrowser the server responds with a status code. If there was a error, you can get additional information about the error. You can find the most frequent error codes and a brief description in the list below.
 
-/**
 
- * StatusCodes provides named constants for
 
 
- * HTTP protocol status codes. Written for the
+HTTP Error 401 Unauthorized
 
+The 401 status code indicates that the HTTP request has not been applied because it lacks valid authentication credentials (usually username and password) for the target resource. If the request included authentication credentials the 401 response indicates that authorization has been refused for those credentials. Please check if your username and password are correct.
 
- * Recess Framework (http://www.recessframework.com/)
 
- * @author Kris Jordan
 
- * @license MIT 
+HTTP status 403 Forbidden
 
- * @package recess.http
+This is a permissions issue. You often encounter this error when no index file (.htm, .html or .php) is present and the directory listing is off for a folder in the Web space (Line "Options -Indexes" in a .htaccess file). Sometimes user authentication was provided, but the authenticated user is not permitted to view the content of the folder or file. Other times the operation is forbidden to all users. Sometimes this error occurs if there are too many connections at the same time. The easyname support team can explain you this issue in depth.
 
- */
 
-class StatusCodes {
 
+HTTP status 404 Not Found
 
-	// [Informational 1xx]
+This error message is shown when a site or folder on a server are requested but cannot be found at the given URL. Please check your input.
 
-	const HTTP_CONTINUE = 100;
 
-	const HTTP_SWITCHING_PROTOCOLS = 101;
 
-	// [Successful 2xx]
+HTTP status 500 Internal Server Error
 
-	const HTTP_OK = 200;
+This is a "catch all" status for unexpected errors. It is a server side error message common causes of this are eg. misconfigured .htaccess files or PHP errors, which you can check in the File php_error.log on your Webhost. You can find the php_error.log file in the /log/ directory - this directory can be found on the same level as your /html/ directory
 
-	const HTTP_CREATED = 201;
 
-	const HTTP_ACCEPTED = 202;
 
-	const HTTP_NONAUTHORITATIVE_INFORMATION = 203;
+HTTP status 503 Service unavailable
 
-	const HTTP_NO_CONTENT = 204;
-
-	const HTTP_RESET_CONTENT = 205;
-
-	const HTTP_PARTIAL_CONTENT = 206;
-
-	// [Redirection 3xx]
-
-	const HTTP_MULTIPLE_CHOICES = 300;
-
-	const HTTP_MOVED_PERMANENTLY = 301;
-
-	const HTTP_FOUND = 302;
-
-	const HTTP_SEE_OTHER = 303;
-
-	const HTTP_NOT_MODIFIED = 304;
-
-	const HTTP_USE_PROXY = 305;
-
-	const HTTP_UNUSED= 306;
-
-	const HTTP_TEMPORARY_REDIRECT = 307;
-
-	// [Client Error 4xx]
-
-	const errorCodesBeginAt = 400;
-
-	const HTTP_BAD_REQUEST = 400;
-
-	const HTTP_UNAUTHORIZED  = 401;
-
-	const HTTP_PAYMENT_REQUIRED = 402;
-
-	const HTTP_FORBIDDEN = 403;
-
-	const HTTP_NOT_FOUND = 404;
-
-	const HTTP_METHOD_NOT_ALLOWED = 405;
-
-	const HTTP_NOT_ACCEPTABLE = 406;
-
-	const HTTP_PROXY_AUTHENTICATION_REQUIRED = 407;
-
-	const HTTP_REQUEST_TIMEOUT = 408;
-
-	const HTTP_CONFLICT = 409;
-
-	const HTTP_GONE = 410;
-
-	const HTTP_LENGTH_REQUIRED = 411;
-
-	const HTTP_PRECONDITION_FAILED = 412;
-
-	const HTTP_REQUEST_ENTITY_TOO_LARGE = 413;
-
-	const HTTP_REQUEST_URI_TOO_LONG = 414;
-
-	const HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
-
-	const HTTP_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
-
-	const HTTP_EXPECTATION_FAILED = 417;
-
-	// [Server Error 5xx]
-
-	const HTTP_INTERNAL_SERVER_ERROR = 500;
-
-	const HTTP_NOT_IMPLEMENTED = 501;
-
-	const HTTP_BAD_GATEWAY = 502;
-
-	const HTTP_SERVICE_UNAVAILABLE = 503;
-
-	const HTTP_GATEWAY_TIMEOUT = 504;
-
-	const HTTP_VERSION_NOT_SUPPORTED = 505;
-
-	private static $messages = array(
-
-		// [Informational 1xx]
-
-		100=>'100 Continue',
-
-		101=>'101 Switching Protocols',
-
-		// [Successful 2xx]
-
-		200=>'200 OK',
-
-		201=>'201 Created',
-
-		202=>'202 Accepted',
-
-		203=>'203 Non-Authoritative Information',
-
-		204=>'204 No Content',
-
-		205=>'205 Reset Content',
-
-		206=>'206 Partial Content',
-
-		// [Redirection 3xx]
-
-		300=>'300 Multiple Choices',
-
-		301=>'301 Moved Permanently',
-
-		302=>'302 Found',
-
-		303=>'303 See Other',
-
-		304=>'304 Not Modified',
-
-		305=>'305 Use Proxy',
-
-		306=>'306 (Unused)',
-
-		307=>'307 Temporary Redirect',
-
-		// [Client Error 4xx]
-
-		400=>'400 Bad Request',
-
-		401=>'401 Unauthorized',
-
-		402=>'402 Payment Required',
-
-		403=>'403 Forbidden',
-
-		404=>'404 Not Found',
-
-		405=>'405 Method Not Allowed',
-
-		406=>'406 Not Acceptable',
-
-		407=>'407 Proxy Authentication Required',
-
-		408=>'408 Request Timeout',
-
-		409=>'409 Conflict',
-
-		410=>'410 Gone',
-
-		411=>'411 Length Required',
-
-		412=>'412 Precondition Failed',
-
-		413=>'413 Request Entity Too Large',
-
-		414=>'414 Request-URI Too Long',
-
-		415=>'415 Unsupported Media Type',
-
-		416=>'416 Requested Range Not Satisfiable',
-
-		417=>'417 Expectation Failed',
-
-		// [Server Error 5xx]
-
-		500=>'500 Internal Server Error',
-
-		501=>'501 Not Implemented',
-
-		502=>'502 Bad Gateway',
-
-		503=>'503 Service Unavailable',
-
-		504=>'504 Gateway Timeout',
-
-		505=>'505 HTTP Version Not Supported'
-
-	);
-
-	public static function httpHeaderFor($code) {
-
-		return 'HTTP/1.1 ' . self::$messages[$code];
-
-	}
-
-	public static function getMessageForCode($code) {
-
-		return self::$messages[$code];
-
-	}
-	
-	public static function isError($code) {
-
-		return is_numeric($code) && $code >= self::HTTP_BAD_REQUEST;
-
-	}
-	
-	public static function canHaveBody($code) {
-
-		return
-
-			// True if not in 100s
-
-			($code < self::HTTP_CONTINUE || $code >= self::HTTP_OK)
-
-			&& // and not 204 NO CONTENT
-
-			$code != self::HTTP_NO_CONTENT
-
-			&& // and not 304 NOT MODIFIED
-
-			$code != self::HTTP_NOT_MODIFIED;
-	}
-}
-?>
+This means, that the server is currently unavailable or the server is overallocated. You can check the file php_error.log as described for the status code 500.
+Should you not find helpful error messages in the logfile, please try changing the session_cache to the option filesystem, you can do this in the easyname control panel if you navigate to [My Hosting]>>[PHP settings] and click the link "Settings". Please note that this change will take up to 15 minutes to take effect, so please try waiting 15 minutes before trying to call up your site and refresh it.
